@@ -18,7 +18,8 @@ exports.newComment = async (req, res) => {
     const notification = new Notification({
       user: post.user,
       post: post.id,
-      text: user.name + " commented on your post."
+      text: user.name + " commented on your post.",
+      profilePicture: user.image
     });
     await notification.save();
   }

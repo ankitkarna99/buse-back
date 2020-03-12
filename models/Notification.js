@@ -12,6 +12,10 @@ const notificationSchema = mongoose.Schema(
       ref: "Post",
       required: "Post is required."
     },
+    profilePicture: {
+      type: String,
+      required: "Profile picture is required."
+    },
     text: {
       type: String,
       trim: true,

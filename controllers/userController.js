@@ -73,10 +73,11 @@ exports.updateProfilePicture = async (req, res) => {
   URL = "/uploads/" + md5 + extension;
   await moveFile(file, "./public" + URL);
 
-  await User.findOneAndUpdate({ id: req.id }, { image: URL });
+  await User.findByIdAndUpdate(req.id, { image: URL });
 
   res.json({
-    message: "Profile Picture Updated!"
+    message: "Profile Picture Updated!",
+    url: URL
   });
 };
 
