@@ -13,7 +13,7 @@ exports.newComment = async (req, res) => {
     post: req.params.id
   });
   await comment.save();
-  if (post.user !== req.id) {
+  if (post.user.toString() !== req.id) {
     const user = await User.findById(req.id);
     const notification = new Notification({
       user: post.user,

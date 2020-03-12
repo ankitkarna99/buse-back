@@ -21,6 +21,11 @@ const userSchema = mongoose.Schema(
       type: String,
       trim: true,
       required: "Phone number is required."
+    },
+    image: {
+      type: String,
+      trim: true,
+      default: "/images/avatar2.png"
     }
   },
   { timestamps: true }

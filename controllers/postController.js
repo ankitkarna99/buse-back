@@ -47,8 +47,7 @@ exports.postById = async (req, res) => {
   const post = await Post.findById(req.params.id).populate("user");
 
   if (!post) throw "Post not found.";
-
-  res.json(post);
+  res.json({ ...post._doc, canDelete: post.user.id.toString() === req.id });
 };
 
 exports.postsByCategoryId = async (req, res) => {
@@ -61,6 +60,14 @@ exports.getPosts = async (req, res) => {
   const posts = await Post.find({}).limit(30);
 
   res.json(posts);
+};
+
+exports.deletePost = async (req, res) => {
+  const x = await Post.findByIdAndDelete(req.params.id);
+  console.log(x, req.params.id);
+  res.json({
+    message: "Post deleted!"
+  });
 };
 
 exports.getMinePost = async (req, res) => {

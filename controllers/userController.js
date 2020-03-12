@@ -2,6 +2,19 @@ const mongoose = require("mongoose");
 const User = mongoose.model("User");
 const md5 = require("md5");
 const jwt = require("jwt-then");
+const path = require("path");
+
+const moveFile = (file, dir) => {
+  return new Promise((resolve, reject) => {
+    file.mv(dir, function(err) {
+      if (err) {
+        reject("Couldn't move file.");
+      } else {
+        resolve();
+      }
+    });
+  });
+};
 
 exports.registerUser = async (req, res) => {
   const { email, password, name, phoneNumber } = req.body;
@@ -37,6 +50,34 @@ exports.login = async (req, res) => {
   //json web tokens
   const token = await jwt.sign({ id: user._id }, "34568thfdcfr5gr");
   res.json({ message: "Login Successful", token });
+};
+
+exports.updateProfilePicture = async (req, res) => {
+  if (!req.files) throw "File wasn't supplied.";
+
+  var file = req.files.file;
+  var fileName = file.name;
+  var size = file.data.length;
+  var extension = path.extname(fileName);
+  var allowedExtensions = /png|jpg|gif|jpeg/;
+
+  var md5 = file.md5;
+  let URL;
+
+  var validExtension = allowedExtensions.test(extension.toLowerCase());
+
+  if (!validExtension) throw "Only image file is allowed!";
+
+  if (size > 5000000) throw "File size must be less than 5 MB";
+
+  URL = "/uploads/" + md5 + extension;
+  await moveFile(file, "./public" + URL);
+
+  await User.findOneAndUpdate({ id: req.id }, { image: URL });
+
+  res.json({
+    message: "Profile Picture Updated!"
+  });
 };
 
 exports.aboutMe = async (req, res) => {
